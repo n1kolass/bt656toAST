@@ -249,10 +249,10 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 		case (state_AST_output)
 
 			s0_ctrl_packet_init : begin 
+				dout_endofpacket <= 0;
 				if (dout_ready) begin
 					dout_valid <= 1;
 					dout_startofpacket <= 1;
-					dout_endofpacket <= 0;
 					pre_dout_data <= 8'h0F;
 					ctrl_px_counter <= 1;
 					state_AST_output <= s1_ctrl_packet_transmission;
