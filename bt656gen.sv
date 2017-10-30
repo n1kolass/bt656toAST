@@ -59,6 +59,7 @@ always_ff @(posedge pre_clock or posedge reset) begin
 		cur_field <= field0;
 		frame_counter <= 0;
 		frame_type <= 0;
+		state <= s4_blank;
 	end else begin
 		case (state)
 		
