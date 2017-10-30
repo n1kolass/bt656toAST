@@ -47,6 +47,30 @@ logic [11:0] cur_px, cur_line;
 logic [3:0] ctrl_px_counter;
 logic [3:0] wait_empty_counter;
 
+logic sync; // We are ready to receive data from the beggining of F0 field
+logic [7:0] sync_byte; // Each bit of this byte is corresponding to the part of video data in BT.656 format
+/*
+
+  blank 			   data
+----------------------------------------
+    0   |               1              | empty lines (1-22)
+----------------------------------------
+        |                              |
+    2   |               3              | data lines  (23-310)
+        |                              |
+----------------------------------------
+    0   |               1              | empty lines (311-312)
+----------------------------------------
+    4   |               5              | empty lines (313 - 335)
+----------------------------------------
+        |                              |
+    6   |               7              | data lines  (336-623)
+        |                              |
+----------------------------------------
+    4   |               5              | empty lines (624-625)
+----------------------------------------
+*/
+
 enum {
 	field0,
 	field1
@@ -82,6 +106,8 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 		px_counter <= 0;
 		wr_req <= 0;
 		state_bt_input <= s0_FF;
+		sync <= 0;
+		sync_byte <= 0;
 	end else begin
 		case (state_bt_input)
 			
@@ -104,22 +130,67 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 			end
 
 			s3_XY_detection : begin 
-				if (bt_data[4]) begin// H = 1 
-					state_bt_input <= s4_blank_10_80;
-					skip_counter <= 0;
-				end else if (bt_data[5]) begin // H = 0, V = 1
-					state_bt_input <= s6_skip_data;
-					px_counter <= 0;
-				end else // H = 0, V = 0
-					// if FIFO is currently full, just skip the line and go to s6_skip_data
-					if (inner_full) begin
-						px_counter <= 0;
+				if (sync == 1) begin
+					if (bt_data[4]) begin// H = 1 
+						state_bt_input <= s4_blank_10_80;
+						skip_counter <= 0;
+					end else if (bt_data[5]) begin // H = 0, V = 1
 						state_bt_input <= s6_skip_data;
-					end else begin
 						px_counter <= 0;
-						wr_req <= 1;
-						state_bt_input <= s5_recieve_data;
-					end
+					end else // H = 0, V = 0
+						// if FIFO is currently full, just skip the line and go to s6_skip_data
+						if (inner_full) begin
+							px_counter <= 0;
+							state_bt_input <= s6_skip_data;
+						end else begin
+							px_counter <= 0;
+							wr_req <= 1;
+							state_bt_input <= s5_recieve_data;
+						end
+				end else begin 
+					case (bt_data[6:4]) // F,V,H
+						3'b011: begin // (0)
+							sync_byte[0] <= 1;
+							if (sync_byte[3:2] == 2'b00) 
+								sync <= 1;
+							state_bt_input <= s4_blank_10_80;
+						end
+						3'b010: begin // (1)
+							sync_byte[1] <= 1;
+							if (sync_byte[3:2] == 2'b00) 
+								sync <= 1;
+							state_bt_input <= s6_skip_data;
+						end
+						3'b001: begin // (2)
+							sync_byte[2] <= 1;
+							state_bt_input <= s4_blank_10_80;
+						end
+						3'b000: begin // (3)
+							sync_byte[3] <= 1;
+							state_bt_input <= s6_skip_data;
+						end
+						3'b111: begin // (4)
+							sync_byte[4] <= 1;
+							if (sync_byte[7:6] == 2'b11)
+								sync <= 1;
+							state_bt_input <= s4_blank_10_80;
+						end
+						3'b110: begin // (5)
+							sync_byte[5] <= 1;
+							if (sync_byte[7:6] == 2'b11)
+								sync <= 1;
+							state_bt_input <= s6_skip_data;
+						end
+						3'b101: begin // (6)
+							sync_byte[6] <= 1;
+							state_bt_input <= s4_blank_10_80;
+						end
+						3'b100: begin // (7)
+							sync_byte[7] <= 1;
+							state_bt_input <= s6_skip_data;
+						end
+					endcase
+				end
 			end
 
 			s4_blank_10_80 : begin 
