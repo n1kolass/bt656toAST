@@ -341,15 +341,16 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 							cur_line <= 0;
 							dout_endofpacket <= 1;
 							state_AST_output <= s0_ctrl_packet_init;
-						end else
+						end else begin
 							cur_line <= cur_line + 1;
-						cur_px <= 0;
-						// Empty signal from buffer comes with delay, so
-						// we need to wait a bit for it to come
-						rd_req <= 0;
-						dout_valid <= 0;
-						state_AST_output <= s4_wait_for_empty; 
-						wait_empty_counter <= 0;
+							cur_px <= 0;
+							// Empty signal from buffer comes with delay, so
+							// we need to wait a bit for it to come
+							rd_req <= 0;
+							dout_valid <= 0;
+							state_AST_output <= s4_wait_for_empty; 
+							wait_empty_counter <= 0;
+						end
 					end else
 						cur_px <= cur_px + 1;
 				end else begin 

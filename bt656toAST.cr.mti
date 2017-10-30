@@ -12,6 +12,13 @@ Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
 Top level modules:
 	CLK_26MHZ
 
+} {} {}} D:/nikolas/bt656toAST/bt656gen.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/bt656gen.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module bt656gen
+
+Top level modules:
+	bt656gen
+
 } {} {}} D:/nikolas/bt656toAST/bt656toAST_test.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/bt656toAST_test.sv
 Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
 -- Compiling module bt656toAST_test
