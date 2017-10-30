@@ -1,0 +1,65 @@
+D:/nikolas/bt656toAST/grayAndBinCounter.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/grayAndBinCounter.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module grayAndBinCounter
+
+Top level modules:
+	grayAndBinCounter
+
+} {} {}} D:/nikolas/bt656toAST/CLK_26MHZ.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/CLK_26MHZ.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module CLK_26MHZ
+
+Top level modules:
+	CLK_26MHZ
+
+} {} {}} D:/nikolas/bt656toAST/bt656toAST_test.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/bt656toAST_test.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module bt656toAST_test
+
+Top level modules:
+	bt656toAST_test
+
+} {} {}} D:/nikolas/bt656toAST/bt656gen.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/bt656gen.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module bt656gen
+
+Top level modules:
+	bt656gen
+
+} {} {}} D:/nikolas/bt656toAST/FIFO_5_lines.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/FIFO_5_lines.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module FIFO_5_lines
+
+Top level modules:
+	FIFO_5_lines
+
+} {} {}} D:/nikolas/bt656toAST/bt656toAST.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/bt656toAST.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module bt656toAST
+
+Top level modules:
+	bt656toAST
+
+} {} {}} D:/nikolas/bt656toAST/FIFO_5_lines_struct.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/FIFO_5_lines_struct.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module FIFO_5_lines_struct
+
+Top level modules:
+	FIFO_5_lines_struct
+
+} {} {}} D:/nikolas/bt656toAST/FIFO_5_lines_stim.sv {1 {vlog -work work -sv -stats=none D:/nikolas/bt656toAST/FIFO_5_lines_stim.sv
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module FIFO_5_lines_stim
+
+Top level modules:
+	FIFO_5_lines_stim
+
+} {} {}} D:/nikolas/bt656toAST/aFIFO.v {1 {vlog -work work -stats=none D:/nikolas/bt656toAST/aFIFO.v
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module aFifo
+-- Compiling module GrayCounter
+
+Top level modules:
+	aFifo
+
+} {} {}}
