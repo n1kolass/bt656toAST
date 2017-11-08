@@ -125,7 +125,7 @@ grayAndBinCounter outCounter (
 	.clock 		(clock_out),
 	.reset 		(reset),
 
-	.count_en 	(cur_px_rd == BUFF_SIZE-1),
+	.count_en 	(cur_px_rd == BUFF_SIZE-1 && read),
 	.gray_out 	(tail_gray),
 	.bin_out	(tail_bin)
 );
@@ -137,7 +137,7 @@ grayAndBinCounter inCounter (
 	.clock 		(clock_in),
 	.reset 		(reset),
 
-	.count_en 	(cur_px_wr == BUFF_SIZE-1),
+	.count_en 	(cur_px_wr == BUFF_SIZE-1 && write),
 	.gray_out 	(head_gray),
 	.bin_out	(head_bin)
 );
