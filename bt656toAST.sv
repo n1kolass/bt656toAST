@@ -144,7 +144,7 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 							state_bt_input <= s6_skip_data;
 						end else begin
 							px_counter <= 0;
-							wr_req <= 1;
+							//wr_req <= 1;
 							state_bt_input <= s5_recieve_data;
 						end
 				end else begin 
@@ -201,6 +201,12 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 			end
 
 			s5_recieve_data : begin 
+				// Receive only Y plane of pixel
+				if (px_counter[0] == 0) begin // If it will be an odd px next 
+					wr_req <= 1;
+				end else begin  
+					wr_req <= 0;
+				end
 				if (px_counter == BT_LINE_WIDTH-1) begin
 					px_counter <= 0;
 					state_bt_input <= s0_FF;

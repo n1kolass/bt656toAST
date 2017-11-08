@@ -15,7 +15,7 @@ module FIFO_5_lines (
 );	
 
 localparam LINE_SIZE 	= 720;
-localparam BUFF_SIZE 	= LINE_SIZE * 2;
+localparam BUFF_SIZE 	= LINE_SIZE;
 
 input logic clock_in;
 input logic clock_out;
