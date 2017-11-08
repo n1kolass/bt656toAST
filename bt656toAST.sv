@@ -6,6 +6,9 @@ module bt656toAST (
 // BT.656 input
 	bt_data,
 	bt_clock,
+	bt_overflow,
+	bt_locked,
+	bt_datavalid,
 // Avalon ST output (source)
 	dout_data,
 	dout_startofpacket,
@@ -14,8 +17,8 @@ module bt656toAST (
 	dout_valid
 );
 
-localparam BT_DATA_WIDTH 	= 8;
-localparam DOUT_DATA_WIDTH 	= 8;
+parameter BT_DATA_WIDTH 	= 8;
+parameter DOUT_DATA_WIDTH 	= 8;
 
 localparam LINE_WIDTH 		= 720;
 localparam BT_LINE_WIDTH 	= LINE_WIDTH * 2;
@@ -28,6 +31,9 @@ input logic reset;
 
 input logic [BT_DATA_WIDTH-1:0] bt_data;
 input logic bt_clock;
+output logic bt_overflow;
+input logic bt_locked;
+input logic bt_datavalid;
 
 input logic dout_ready;
 output logic [DOUT_DATA_WIDTH-1:0] dout_data;
