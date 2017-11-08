@@ -272,19 +272,19 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 
 						1 : begin
 							dout_startofpacket <= 0;
-							pre_dout_data <= {4'h0, BT_LINE_WIDTH[15:12]};
+							pre_dout_data <= {4'h0, LINE_WIDTH[15:12]};
 						end 
 
 						2 : begin
-							pre_dout_data <= {4'h0, BT_LINE_WIDTH[11:8]};
+							pre_dout_data <= {4'h0, LINE_WIDTH[11:8]};
 						end 
 
 						3 : begin
-							pre_dout_data <= {4'h0, BT_LINE_WIDTH[7:4]};
+							pre_dout_data <= {4'h0, LINE_WIDTH[7:4]};
 						end 
 
 						4 : begin
-							pre_dout_data <= {4'h0, BT_LINE_WIDTH[3:0]};
+							pre_dout_data <= {4'h0, LINE_WIDTH[3:0]};
 						end 
 
 						5 : begin
@@ -342,7 +342,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 						dout_startofpacket <= 0;
 					dout_valid <= 1;
 					rd_req <= 1;
-					if (cur_px == BT_LINE_WIDTH-1) begin 
+					if (cur_px == LINE_WIDTH-1) begin 
 						if (cur_line == HALF_HEIGHT-1) begin 
 							cur_line <= 0;
 							dout_endofpacket <= 1;

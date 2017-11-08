@@ -55,7 +55,7 @@ always_ff @(posedge pre_clock or posedge reset) begin
 		is_blank <= 1;
 		is_cur_px_Y <= 0;
 		cur_px <= 0;
-		cur_line <= 22;
+		cur_line <= 0;
 		cur_field <= field0;
 		frame_counter <= 0;
 		frame_type <= 0;
