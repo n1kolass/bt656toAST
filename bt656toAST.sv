@@ -221,8 +221,8 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 				// Receive only Y plane of pixel
 				// And cut a clip of 640x480 from frame
 				if ((px_counter[0] == 0) 
-					&& (px_counter > LINE_BORDER_RIGHT) 
-					&& (px_counter < LINE_BORDER_LEFT) 
+					&& (px_counter < LINE_BORDER_RIGHT) 
+					&& (px_counter > LINE_BORDER_LEFT) 
 					&& (line_counter > LINE_BORDER_TOP)
 					&& (line_counter < LINE_BORDER_BOT)
 				) begin
