@@ -233,7 +233,7 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 	end
 end
 
-assign dout_data = rd_req ? fifo_dout_data : pre_dout_data;
+assign dout_data = (rd_req && (state_AST_output != s2_begin_video_packet)) ? fifo_dout_data : pre_dout_data;
 
 enum {
 	s0_ctrl_packet_init,
@@ -264,7 +264,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 		dout_valid <= 0;
 		cur_field <= field0;
 		wait_empty_counter <= 0;
-		rd_req <= 0;
+		// rd_req <= 0;
 	end else begin
 
 		case (state_AST_output)
@@ -344,7 +344,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 					pre_dout_data <= 8'h00;
 					cur_px <= 0;
 					cur_line <= 0;
-					rd_req <= 1;
+					// rd_req <= 1;
 					state_AST_output <= s3_video_packet_transmission;
 				end else
 					dout_valid <= 0;
@@ -356,7 +356,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 					if (cur_px == 0)
 						dout_startofpacket <= 0;
 					dout_valid <= 1;
-					rd_req <= 1;
+					// rd_req <= 1;
 					if (cur_px == LINE_WIDTH-1) begin 
 						if (cur_line == HALF_HEIGHT-1) begin 
 							cur_line <= 0;
@@ -371,12 +371,12 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 							state_AST_output <= s4_wait_for_empty; 
 							wait_empty_counter <= 0;
 						end
-						rd_req <= 0;
+						// rd_req <= 0;
 					end else
 						cur_px <= cur_px + 1;
 				end else begin 
 					dout_valid <= 0;
-					rd_req <= 0;
+					// rd_req <= 0;
 				end
 			end
 
