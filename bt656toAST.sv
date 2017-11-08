@@ -22,6 +22,15 @@ parameter DOUT_DATA_WIDTH 	= 8;
 
 localparam LINE_WIDTH 		= 720;
 localparam BT_LINE_WIDTH 	= LINE_WIDTH * 2;
+localparam BT_HEIGHT		= 576;
+
+localparam SCALED_LINE_WIDTH= 640;
+localparam SCALED_HEIGHT 	= 480;
+localparam SCALED_HALF_HEIGHT = 240;
+localparam LINE_BORDER_TOP	= 48 - 1;
+localparam LINE_BORDER_BOT	= 528;
+localparam LINE_BORDER_LEFT = 40 - 1;
+localparam LINE_BORDER_RIGHT= 680;
 
 localparam HALF_HEIGHT 		= 288; 
 localparam BLANK_WIDTH 		= 280;
@@ -48,6 +57,7 @@ logic inner_full, inner_empty;
 // bt_input
 logic [8:0] skip_counter;
 logic [11:0] px_counter; // Counts pixels in bt line
+logic [11:0] line_counter; // Counts lines in bt data part
 // AST output
 logic [11:0] cur_px, cur_line;
 logic [3:0] ctrl_px_counter;
@@ -114,6 +124,7 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 		state_bt_input <= s0_FF;
 		sync <= 0;
 		sync_byte <= 0;
+		line_counter <= 0;
 	end else begin
 		case (state_bt_input)
 			
@@ -208,12 +219,22 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 
 			s5_recieve_data : begin 
 				// Receive only Y plane of pixel
-				if (px_counter[0] == 0) begin // If it will be an odd px next 
+				// And cut a clip of 640x480 from frame
+				if ((px_counter[0] == 0) 
+					&& (px_counter > LINE_BORDER_RIGHT) 
+					&& (px_counter < LINE_BORDER_LEFT) 
+					&& (line_counter > LINE_BORDER_TOP)
+					&& (line_counter < LINE_BORDER_BOT)
+				) begin
 					wr_req <= 1;
 				end else begin  
 					wr_req <= 0;
 				end
 				if (px_counter == BT_LINE_WIDTH-1) begin
+					if (line_counter == BT_HEIGHT-1) begin
+						line_counter <= 0;
+					end else
+						line_counter <= line_counter + 1;
 					px_counter <= 0;
 					state_bt_input <= s0_FF;
 					wr_req <= 0;
@@ -246,7 +267,7 @@ enum {
 always_comb begin 
 	if ((state_AST_output == s2_begin_video_packet) && dout_ready && ~inner_empty)
 		rd_req = 1;
-	else if ((state_AST_output == s3_video_packet_transmission) && dout_ready && ~inner_empty && (cur_px != LINE_WIDTH-1))
+	else if ((state_AST_output == s3_video_packet_transmission) && dout_ready && ~inner_empty && (cur_px != SCALED_LINE_WIDTH-1))
 		rd_req = 1;
 	else
 		rd_req = 0;
@@ -287,35 +308,35 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 
 						1 : begin
 							dout_startofpacket <= 0;
-							pre_dout_data <= {4'h0, LINE_WIDTH[15:12]};
+							pre_dout_data <= {4'h0, SCALED_LINE_WIDTH[15:12]};
 						end 
 
 						2 : begin
-							pre_dout_data <= {4'h0, LINE_WIDTH[11:8]};
+							pre_dout_data <= {4'h0, SCALED_LINE_WIDTH[11:8]};
 						end 
 
 						3 : begin
-							pre_dout_data <= {4'h0, LINE_WIDTH[7:4]};
+							pre_dout_data <= {4'h0, SCALED_LINE_WIDTH[7:4]};
 						end 
 
 						4 : begin
-							pre_dout_data <= {4'h0, LINE_WIDTH[3:0]};
+							pre_dout_data <= {4'h0, SCALED_LINE_WIDTH[3:0]};
 						end 
 
 						5 : begin
-							pre_dout_data <= {4'h0, HALF_HEIGHT[15:12]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[15:12]};
 						end 
 
 						6 : begin
-							pre_dout_data <= {4'h0, HALF_HEIGHT[11:8]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[11:8]};
 						end 
 
 						7 : begin
-							pre_dout_data <= {4'h0, HALF_HEIGHT[7:4]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[7:4]};
 						end 
 
 						8 : begin
-							pre_dout_data <= {4'h0, HALF_HEIGHT[3:0]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[3:0]};
 						end 
 
 						9 : begin 
@@ -357,8 +378,8 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 						dout_startofpacket <= 0;
 					dout_valid <= 1;
 					// rd_req <= 1;
-					if (cur_px == LINE_WIDTH-1) begin 
-						if (cur_line == HALF_HEIGHT-1) begin 
+					if (cur_px == SCALED_LINE_WIDTH-1) begin 
+						if (cur_line == SCALED_HALF_HEIGHT-1) begin 
 							cur_line <= 0;
 							dout_endofpacket <= 1;
 							state_AST_output <= s0_ctrl_packet_init;
