@@ -254,7 +254,7 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 	end
 end
 
-assign dout_data = (rd_req && (state_AST_output != s2_begin_video_packet)) ? fifo_dout_data : pre_dout_data;
+assign dout_data = /*(rd_req && (state_AST_output != s2_begin_video_packet)) ? fifo_dout_data : */pre_dout_data;
 
 enum {
 	s0_ctrl_packet_init,
@@ -265,7 +265,7 @@ enum {
 } state_AST_output;
 
 always_comb begin 
-	if ((state_AST_output == s2_begin_video_packet) && dout_ready && ~inner_empty)
+	if ((state_AST_output == s2_begin_video_packet))
 		rd_req = 1;
 	else if ((state_AST_output == s3_video_packet_transmission) && dout_ready && ~inner_empty && (cur_px != SCALED_LINE_WIDTH-1))
 		rd_req = 1;
