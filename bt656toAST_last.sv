@@ -220,7 +220,7 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 			s5_recieve_data : begin 
 				// Receive only Y plane of pixel
 				// And cut a clip of 640x480 from frame
-				if ((px_counter[0] == 1) 
+				if ((px_counter[0] == 0) 
 					&& (px_counter < LINE_BORDER_RIGHT) 
 					&& (px_counter > LINE_BORDER_LEFT) 
 					&& (line_counter > LINE_BORDER_TOP)
@@ -283,7 +283,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 		dout_startofpacket <= 0;
 		dout_endofpacket <= 0;
 		dout_valid <= 0;
-		//cur_field <= field0;
+		cur_field <= field0;
 		wait_empty_counter <= 0;
 		// rd_req <= 0;
 	end else begin
@@ -324,23 +324,29 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 						end 
 
 						5 : begin
-							pre_dout_data <= {4'h0, SCALED_HEIGHT[15:12]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[15:12]};
 						end 
 
 						6 : begin
-							pre_dout_data <= {4'h0, SCALED_HEIGHT[11:8]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[11:8]};
 						end 
 
 						7 : begin
-							pre_dout_data <= {4'h0, SCALED_HEIGHT[7:4]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[7:4]};
 						end 
 
 						8 : begin
-							pre_dout_data <= {4'h0, SCALED_HEIGHT[3:0]};
+							pre_dout_data <= {4'h0, SCALED_HALF_HEIGHT[3:0]};
 						end 
 
 						9 : begin 
-							pre_dout_data <= 4'b0000; // Progressive frame
+							if (cur_field == field0) begin
+								pre_dout_data <= 4'b1011; // Interlaced F0 field, pairing don’t care
+								cur_field <= field1;
+							end else begin 
+								pre_dout_data <= 4'b1111; // Interlaced F1 field, pairing don’t care
+								cur_field <= field0;
+							end
 							dout_endofpacket <= 1'b1;
 							state_AST_output <= s2_begin_video_packet;
 						end 
@@ -359,6 +365,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 					pre_dout_data <= 8'h00;
 					cur_px <= 0;
 					cur_line <= 0;
+					// rd_req <= 1;
 					state_AST_output <= s3_video_packet_transmission;
 				end else
 					dout_valid <= 0;
@@ -370,8 +377,9 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 					if (cur_px == 0)
 						dout_startofpacket <= 0;
 					dout_valid <= 1;
+					// rd_req <= 1;
 					if (cur_px == SCALED_LINE_WIDTH-1) begin 
-						if (cur_line == SCALED_HEIGHT-1) begin 
+						if (cur_line == SCALED_HALF_HEIGHT-1) begin 
 							cur_line <= 0;
 							dout_endofpacket <= 1;
 							state_AST_output <= s0_ctrl_packet_init;
@@ -384,10 +392,12 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 							state_AST_output <= s4_wait_for_empty; 
 							wait_empty_counter <= 0;
 						end
+						// rd_req <= 0;
 					end else
 						cur_px <= cur_px + 1;
 				end else begin 
 					dout_valid <= 0;
+					// rd_req <= 0;
 				end
 			end
 
