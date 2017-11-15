@@ -250,19 +250,19 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 					end else begin  
 						wr_req <= 0;
 					end
-					if (px_counter == BT_LINE_WIDTH-1) begin
-						if (line_counter == BT_HEIGHT-1) begin
-							line_counter <= 0;
-						end else
-							line_counter <= line_counter + 1;
-						px_counter <= 0;
-						state_bt_input <= s0_FF;
-						wr_req <= 0;
-					end else
-						px_counter <= px_counter + 1;
 				end else begin 
 					wr_req <= 0;
 				end
+				if (px_counter == BT_LINE_WIDTH-1) begin
+					if (line_counter == BT_HEIGHT-1) begin
+						line_counter <= 0;
+					end else
+						line_counter <= line_counter + 1;
+					px_counter <= 0;
+					state_bt_input <= s0_FF;
+					wr_req <= 0;
+				end else
+					px_counter <= px_counter + 1;
 			end
 
 			s6_skip_data : begin 
