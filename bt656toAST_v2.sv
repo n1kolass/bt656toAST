@@ -237,7 +237,7 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 			end
 
 			s5_recieve_data : begin 
-				if (inner_full == 1) begin
+				if (inner_full == 0) begin
 					// Receive only Y plane of pixel
 					// And cut a clip of 640x480 from frame
 					if ((px_counter[0] == 0) 
