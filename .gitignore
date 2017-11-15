@@ -8,3 +8,5 @@ work/_lib.qdb
 work/_info
 vsim.wlf
 bt656toAST.cr.mti
+*.mpf
+work/_vmake
