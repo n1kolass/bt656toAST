@@ -1,10 +1,12 @@
 
-*.mti
-*.mti
-bt656toAST.cr.mti
 work/_info
-*.qdb
-work/_lib1_4.qpg
-work/_lib1_4.qtl
+work/_lib1_5.qdb
 work/_lib1_5.qpg
 work/_lib1_5.qtl
+work/_lib1_4.qtl
+work/_lib.qdb
+work/_info
+vsim.wlf
+bt656toAST.cr.mti
+*.mpf
+work/_vmake
