@@ -28,9 +28,9 @@ localparam SCALED_LINE_WIDTH= 640;
 localparam SCALED_HEIGHT 	= 480;
 localparam SCALED_HALF_HEIGHT = 240;
 localparam LINE_BORDER_TOP	= 48 - 1;
-localparam LINE_BORDER_BOT	= 528;
+localparam LINE_BORDER_BOT	= 480;
 localparam LINE_BORDER_LEFT = 39*2;
-localparam LINE_BORDER_RIGHT= 679*2;
+localparam LINE_BORDER_RIGHT= 640*2;
 
 localparam HALF_HEIGHT 		= 288; 
 localparam BLANK_WIDTH 		= 280;
@@ -242,8 +242,8 @@ always_ff @(posedge bt_clock or posedge reset) begin : bt_input
 					// And cut a clip of 640x480 from frame
 					if ((px_counter[0] == 0) 
 						&& (px_counter < LINE_BORDER_RIGHT) 
-						&& (px_counter > LINE_BORDER_LEFT) 
-						&& (line_counter > LINE_BORDER_TOP)
+						// && (px_counter > LINE_BORDER_LEFT) 
+						// && (line_counter > LINE_BORDER_TOP)
 						&& (line_counter < LINE_BORDER_BOT)
 					) begin
 						wr_req <= 1;
@@ -290,7 +290,7 @@ enum {
 always_comb begin 
 	if ((state_AST_output == s2_begin_video_packet) && ~inner_empty && dout_ready)
 		rd_req = 1;
-	else if ((state_AST_output == s3_video_packet_transmission) && dout_ready && ~inner_empty && (cur_px != SCALED_LINE_WIDTH-1))
+else if ((state_AST_output == s3_video_packet_transmission) && dout_ready && ~inner_empty) // && (cur_px != SCALED_LINE_WIDTH-1))
 		rd_req = 1;
 	else
 		rd_req = 0;

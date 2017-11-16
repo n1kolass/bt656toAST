@@ -5,6 +5,7 @@
 module TD_reset (
 	input clock,
 	input reset,
+	input SW_start,
 
 	output nTDreset
 );
