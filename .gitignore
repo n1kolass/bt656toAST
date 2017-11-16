@@ -10,3 +10,4 @@ vsim.wlf
 bt656toAST.cr.mti
 *.mpf
 work/_vmake
+TD_reset.sv.bak
