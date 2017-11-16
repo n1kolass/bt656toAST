@@ -366,7 +366,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 						end 
 
 						9 : begin 
-							pre_dout_data <= 4'b0000; // Progressive frame
+							pre_dout_data <= 8'h00; // Progressive frame
 							dout_endofpacket <= 1'b1;
 							state_AST_output <= s2_begin_video_packet;
 						end 
