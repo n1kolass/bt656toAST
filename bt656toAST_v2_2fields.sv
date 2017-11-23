@@ -378,7 +378,7 @@ always_ff @(posedge clock or posedge reset) begin : AST_output
 									4'b1110 // Interlaced F1 field, pairing don’t care
 								};
 								cur_field <= field0;
-							endme
+							end
 							dout_endofpacket <= 1'b1;
 							state_AST_output <= s2_begin_video_packet;
 						end 
